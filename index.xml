@@ -14,10 +14,11 @@ Go developer&amp;rsquo;s journey exploring Rust very insightful as well.&lt;/p>
 &lt;/li>
 &lt;li>
 &lt;p>&lt;strong>Real-Time dataata-driven ecosystem&lt;/strong>&lt;/p>
-&lt;p>At Orbee we&amp;rsquo;ve started using Pulsar to stream our real-time data streams and
-events in late 2021. Moving forward, checking out cool projects like
-&lt;a href="https://flink.apache.org/">Flink&lt;/a> and &lt;a href="https://delta.io/">Delta Lake&lt;/a> to
-build an ecosystem on top of pulsar is on our list of goals in 2022.&lt;/p>
+&lt;p>At Orbee we&amp;rsquo;ve started using &lt;a href="https://pulsar.apache.org/">Pulsar&lt;/a> to support
+our real-time data streams and events in late 2021. Moving forward, checking
+out awesome projects like &lt;a href="https://flink.apache.org/">Flink&lt;/a> and
+&lt;a href="https://delta.io/">Delta Lake&lt;/a> to build an ecosystem on top of Pulsar is on
+our list of goals in 2022.&lt;/p>
 &lt;/li>
 &lt;/ul>
 &lt;h2 id="personal">Personal&lt;/h2>
