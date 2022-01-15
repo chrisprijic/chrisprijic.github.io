@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Home on Chris Prijic</title><link>http://chrisprijic.com/</link><description>Recent content in Home on Chris Prijic</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Fri, 14 Jan 2022 12:38:42 -0800</lastBuildDate><atom:link href="http://chrisprijic.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Personal Goals for 2022</title><link>http://chrisprijic.com/personal-goals-for-2022/</link><pubDate>Fri, 14 Jan 2022 12:38:42 -0800</pubDate><guid>http://chrisprijic.com/personal-goals-for-2022/</guid><description>&lt;p>As I step into 2022, I want to write down my goals for this year. This list is
+by no means all-encompassing but it covers many of the highlights I want to hit
+this year.&lt;/p>
+&lt;p>I’ve found writing down and sharing my goals to be a great motivator, so this
+post will hopefully help me be more accountable to my goals this year.&lt;/p>
+&lt;h2 id="professional">Professional&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>The Rust programming language&lt;/strong>&lt;/p>
+&lt;p>&lt;a href="https://www.rust-lang.org/">Rust&lt;/a> is showing up alot on projects around me,
+and the language design also interests me. I&amp;rsquo;ve found
+&lt;a href="https://twitter.com/nodirt_/status/1478419198174896130">this experience&lt;/a> of a
+Go developer&amp;rsquo;s journey exploring Rust very insightful as well.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Real-Time dataata-driven ecosystem&lt;/strong>&lt;/p>
+&lt;p>At Orbee we&amp;rsquo;ve started using Pulsar to stream our real-time data streams and
+events in late 2021. Moving forward, checking out cool projects like
+&lt;a href="https://flink.apache.org/">Flink&lt;/a> and &lt;a href="https://delta.io/">Delta Lake&lt;/a> to
+build an ecosystem on top of pulsar is on our list of goals in 2022.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="personal">Personal&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Write an article once a month&lt;/strong>&lt;/p>
+&lt;p>To work on my professional writing, I plan on getting myself to start writing
+on a regular basis. This is my first post to kick off this trend.&lt;/p>
+&lt;p>I have some interesting topics in the areas I&amp;rsquo;ve worked in (data, analytics,
+marketing and game development) that I want to discuss on this site.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Read a new book once a month&lt;/strong>&lt;/p>
+&lt;p>To continue to make sure I&amp;rsquo;m growing and developing personally and
+professionally, I also want to maintain a steady reading habit.&lt;/p>
+&lt;p>I&amp;rsquo;m currently reading
+&lt;a href="https://www.oreilly.com/library/view/modern-software-engineering/9780137314942/">Modern Software Engineering&lt;/a>
+by David Farley to concretize my understanding on how to communicate about
+good software development practices.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Exercise regularly&lt;/strong>&lt;/p>
+&lt;p>I make sure to get my steps in every day and get my heart rate up &lt;em>most&lt;/em> days,
+but I want to do better. Working on a more holistic solution so I maintain a
+healthy lifestyle is my goal in 2022.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="projects">Projects&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Modified map/reduce project in Rust (Distributed, Cloud-Native)&lt;/strong>&lt;/p>
+&lt;p>I&amp;rsquo;ve seen a trend of projects that iterate off of a &amp;ldquo;modified&amp;rdquo; Map/Reduce
+software architecture that I find interesting as a solution space; I plan on
+exploring this space with a project of my own.&lt;/p>
+&lt;p>A great example of this is &lt;a href="https://quickwit.io/">Quickwit&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Create a game in C++&lt;/strong>&lt;/p>
+&lt;p>I&amp;rsquo;ve dabbled in game development since College (software rendering,
+Minecraft clone) but never followed through on any of these projects. I&amp;rsquo;ve
+also been told finishing that first game is the hardest part &amp;ndash; so I plan on
+starting small and completing a game this year.&lt;/p>
+&lt;p>&lt;a href="https://www.ponggame.org/">Pong&lt;/a>,
+&lt;a href="https://en.wikipedia.org/wiki/Snake_(video_game_genre)">Snake&lt;/a>, and
+&lt;a href="https://en.wikipedia.org/wiki/Space_Invaders">Space Invaders&lt;/a> are all great
+examples of games that can be pulled off in a reasonable amount of time.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Build a personal website&lt;/strong> ✅&lt;/p>
+&lt;p>I purchased this domain a couple years ago. Since then, I haven&amp;rsquo;t used it.
+This year, I&amp;rsquo;ve decided to utilize it as a way to accomplish my goals and
+share more of my skills and experiences publicly.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>I&amp;rsquo;m excited to see how 2022 goes as I work towards these goals! What are you
+planning to accomplish in 2022?&lt;/p></description></item></channel></rss>
