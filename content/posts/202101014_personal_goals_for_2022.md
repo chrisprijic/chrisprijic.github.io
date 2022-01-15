@@ -22,10 +22,11 @@ post will hopefully help me be more accountable to my goals this year.
  
 - **Real-Time dataata-driven ecosystem**
  
-  At Orbee we've started using Pulsar to stream our real-time data streams and
-  events in late 2021. Moving forward, checking out cool projects like
-  [Flink](https://flink.apache.org/) and [Delta Lake](https://delta.io/) to
-  build an ecosystem on top of pulsar is on our list of goals in 2022.
+  At Orbee we've started using [Pulsar](https://pulsar.apache.org/) to support 
+  our real-time data streams and events in late 2021. Moving forward, checking 
+  out awesome projects like [Flink](https://flink.apache.org/) and 
+  [Delta Lake](https://delta.io/) to build an ecosystem on top of Pulsar is on 
+  our list of goals in 2022.
  
 ## Personal
  
