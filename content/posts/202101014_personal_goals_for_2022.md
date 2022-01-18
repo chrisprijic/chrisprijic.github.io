@@ -15,8 +15,8 @@ post will hopefully help me be more accountable to my goals this year.
  
 - **The Rust programming language**
  
-  [Rust](https://www.rust-lang.org/) is showing up alot on projects around me,
-  and the language design also interests me. I've found
+  [Rust](https://www.rust-lang.org/) is showing up alot on projects that 
+  interest me, and the language's design also draws me in. I've found
   [this experience](https://twitter.com/nodirt_/status/1478419198174896130) of a
   Go developer's journey exploring Rust very insightful as well.
  
@@ -32,8 +32,8 @@ post will hopefully help me be more accountable to my goals this year.
  
 - **Write an article once a month**
  
-  To work on my professional writing, I plan on getting myself to start writing
-  on a regular basis. This is my first post to kick off this trend.
+  To continue to develop my professional writing, I plan on getting myself to 
+  write on a regular basis. This is my first post to kick off this trend.
  
   I have some interesting topics in the areas I've worked in (data, analytics,
   marketing and game development) that I want to discuss on this site.
