@@ -7,10 +7,11 @@ pygmentsCodeFences     = true
 pygmentsUseClasses     = true
 
 [params]
-  description  = "Chris Prijic's personal website."
-  copyright   = "© 2022-present Chris Prijic (unless otherwise noted). Views are my own and do not necessarily reflect those of my employer."
-  dark        = "auto"
-  highlight   = true
+  description      = "Chris Prijic's personal website."
+  copyright        = "© 2022-present Chris Prijic (unless otherwise noted). Views are my own and do not necessarily reflect those of my employer."
+  dark             = "auto"
+  highlight        = true
+  google_analytics = "UA-33625943-1"
 
 [menu]
   [[menu.main]]
