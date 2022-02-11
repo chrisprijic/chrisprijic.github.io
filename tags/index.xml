@@ -1,4 +1,162 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tags on Chris Prijic</title><link>https://chrisprijic.com/tags/</link><description>Recent content in Tags on Chris Prijic</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><atom:link href="https://chrisprijic.com/tags/index.xml" rel="self" type="application/rss+xml"/><item><title>Personal Goals for 2022</title><link>https://chrisprijic.com/personal-goals-for-2022/</link><pubDate>Fri, 14 Jan 2022 12:38:42 -0800</pubDate><guid>https://chrisprijic.com/personal-goals-for-2022/</guid><description>&lt;p>As I step into 2022, I want to write down my goals for this year. This list is
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tags on Chris Prijic</title><link>https://chrisprijic.com/tags/</link><description>Recent content in Tags on Chris Prijic</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><atom:link href="https://chrisprijic.com/tags/index.xml" rel="self" type="application/rss+xml"/><item><title>Idempotency is Key</title><link>https://chrisprijic.com/idempotency-is-key/</link><pubDate>Fri, 11 Feb 2022 14:00:00 -0800</pubDate><guid>https://chrisprijic.com/idempotency-is-key/</guid><description>&lt;p>&lt;strong>Idempotence&lt;/strong>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> is a property of software that regardless of the number of
+times an operation is run, the final results (its output + side effects) are
+equivalent to running it only once.&lt;/p>
+&lt;p>If you&amp;rsquo;re performing an action at a given time, you could schedule a cron
+job and perform it at the desired time. The idempotent way of doing this would
+also include checks against &lt;em>if you&amp;rsquo;ve already done an action before.&lt;/em>&lt;/p>
+&lt;p>In some software, this might be overkill. In many cases, this property
+of software is &lt;strong>critical&lt;/strong> to your success, whether it be software that
+performs financial transactions&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> or sends notifications to users.&lt;/p>
+&lt;h2 id="why-do-i-need-to-worry-about-this">Why do I need to worry about this?&lt;/h2>
+&lt;p>There are many reasons software might require this property:&lt;/p>
+&lt;ul>
+&lt;li>your server went down while the code may or may not have performed an
+action&lt;/li>
+&lt;li>you may need to update the code to be able to execute it again, but without
+side effects due to re-running the code&lt;/li>
+&lt;li>your data pipeline received data late, and therefore needs to be re-run for
+the late time-range&lt;/li>
+&lt;/ul>
+&lt;p>In any case, it should only take a little extra thought to figure out that
+you&amp;rsquo;ve run into any case like these.&lt;/p>
+&lt;p>With cloud computing being so common, failure is almost expected of
+your hardware&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>. How you handle error scenarios is all based on &lt;em>risk&lt;/em>. You&amp;rsquo;ll
+want to apply idempotency to software where you &lt;em>can&amp;rsquo;t&lt;/em> take the risk that your
+code will generate additional side effects if re-run.&lt;/p>
+&lt;h2 id="example-1-notifications">Example 1: Notifications&lt;/h2>
+&lt;p>Email marketing is a common solution to reaching out to the masses about your
+product, blog, or feature update. A simple solution could be:&lt;/p>
+&lt;ol>
+&lt;li>Gather a list of recipients that need to be emailed&lt;/li>
+&lt;li>Iterate over the list and email them&lt;/li>
+&lt;/ol>
+&lt;p>However, there could be issues with running this in production. This process is
+not idempotent, and can create a larger issue if it fails in the middle or is
+processed multiple times.&lt;/p>
+&lt;p>If we want to enable idempotency, you could do the following (changes in bold):&lt;/p>
+&lt;ol>
+&lt;li>Gather a list of recipients &lt;strong>that haven&amp;rsquo;t received this email&lt;/strong>&lt;/li>
+&lt;li>Iterate over the list and email them, &lt;strong>marking them off as you go&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;p>Now, if you run the process again, it will only notify those that haven&amp;rsquo;t
+already received the email.&lt;/p>
+&lt;h2 id="example-2-data-processing">Example 2: Data Processing&lt;/h2>
+&lt;p>Data is another common example that is ever-present in software nowadays.
+Something as simple as a user login count could easily be implemented like this:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="k">UPDATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">login_count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">login_count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>As we can see, there are two main issues with this statement:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>It&amp;rsquo;s not idempotent!&lt;/strong> Running it multiple times (software bug, login spam)
+will result in a invalid count that shows signs of the number of times it was
+run.&lt;/li>
+&lt;li>&lt;strong>You can&amp;rsquo;t retrace your steps!&lt;/strong> You only have the final count in the DB;
+unless you load a DB backup and re-run your API logs against it, you can&amp;rsquo;t
+reconcile the login count of a user if there was an issue.&lt;/li>
+&lt;/ol>
+&lt;p>Let&amp;rsquo;s try this again, but include a path for idempotency. If we keep a log of
+logins that are performed by users, we could utilize this table:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="k">INSERT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INTO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_logins&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">timestamp&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">now&lt;/span>&lt;span class="p">())&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">CONFLICT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOTHING&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">ID&lt;/th>
+&lt;th style="text-align:left">User ID&lt;/th>
+&lt;th style="text-align:left">Timestamp&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">1&lt;/td>
+&lt;td style="text-align:left">1&lt;/td>
+&lt;td style="text-align:left">2022-02-09 00:02:23&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">2&lt;/td>
+&lt;td style="text-align:left">1&lt;/td>
+&lt;td style="text-align:left">2022-02-09 00:02:45&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">3&lt;/td>
+&lt;td style="text-align:left">2&lt;/td>
+&lt;td style="text-align:left">2022-02-09 00:02:46&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">4&lt;/td>
+&lt;td style="text-align:left">2&lt;/td>
+&lt;td style="text-align:left">2022-02-09 00:03:01&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">5&lt;/td>
+&lt;td style="text-align:left">2&lt;/td>
+&lt;td style="text-align:left">2022-02-09 00:04:26&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>Since we assign an ID to each login request, we can dedup the results by the ID
+column. You can then perform a daily aggregation:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="k">INSERT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INTO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">daily_user_counts&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">timestamp&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">as&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">count&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_logins&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">timestamp&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">CONFLICT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">UPDATE&lt;/span>&lt;span class="w">
+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">excluded&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="k">count&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>If this is ran one time or twenty times for the date &lt;code>'2022-02-09'&lt;/code>, you&amp;rsquo;ll
+always get the following result:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">User ID&lt;/th>
+&lt;th style="text-align:left">Count&lt;/th>
+&lt;th style="text-align:left">Date&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">1&lt;/td>
+&lt;td style="text-align:left">2&lt;/td>
+&lt;td style="text-align:left">2022-02-09&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">2&lt;/td>
+&lt;td style="text-align:left">3&lt;/td>
+&lt;td style="text-align:left">2022-02-09&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>This way, the &lt;em>entire data process&lt;/em>&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup> is idempotent &amp;ndash; the final results don&amp;rsquo;t
+show any sign of the number of times it was run, and can safely be performed
+multiple times and deliver the same, accurate results.&lt;/p>
+&lt;h2 id="idempotency-is-key">Idempotency is Key&lt;/h2>
+&lt;p>Overall, Idempotency should be an all-time &amp;ldquo;Great Software Principle You Should
+Know&amp;rdquo;&lt;sup>TM&lt;/sup>. It helps you build reliable software processes that can
+handle more of the unknowns that production systems can throw at you. When you
+have a critical process, idempotency can be one of the best tools to create a
+more resilient software solution.&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>&lt;a href="https://en.wikipedia.org/wiki/Idempotence">Wikipedia, Idempotence&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>A great example is Stripe&amp;rsquo;s
+&lt;a href="https://stripe.com/blog/idempotency">Idempotency Key&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>&lt;em>When you think in terms of the blast radius, the question of failure is
+no longer a question of if but a matter of when.&lt;/em>
+&lt;a href="https://aws.amazon.com/getting-started/fundamentals-core-concepts/">AWS Fundamentals&lt;/a>&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:4" role="doc-endnote">
+&lt;p>The process is idempotent, but the transform is &lt;em>reproducable&lt;/em>.
+&lt;a href="https://medium.com/ssense-tech/lets-get-idempotence-right-59f227178bb8">Let’s Get ‘Idempotence’ Right&lt;/a>&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Personal Goals for 2022</title><link>https://chrisprijic.com/personal-goals-for-2022/</link><pubDate>Fri, 14 Jan 2022 12:38:42 -0800</pubDate><guid>https://chrisprijic.com/personal-goals-for-2022/</guid><description>&lt;p>As I step into 2022, I want to write down my goals for this year. This list is
 by no means all-encompassing but it covers many of the highlights I want to hit
 this year.&lt;/p>
 &lt;p>I’ve found writing down and sharing my goals to be a great motivator, so this

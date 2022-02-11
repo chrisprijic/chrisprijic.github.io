@@ -1,0 +1,204 @@
+<!doctype html><html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="Chris Prijic's personal website.">
+<link rel=apple-touch-icon sizes=180x180 href=/img/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=/img/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/img/favicon-16x16.png>
+<link rel=manifest href=/meta/site.webmanifest>
+<link rel=stylesheet href=/css/style.min.css>
+<title>Idempotency is Key</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-33625943-1"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','UA-33625943-1')</script>
+</head><body><header id=banner>
+<h2><a href=https://chrisprijic.com/>Chris Prijic</a></h2>
+<nav>
+<ul>
+<li>
+<a href=/ title=posts>posts</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=content>
+<article>
+<header id=post-header>
+<h1>Idempotency is Key</h1>
+<div>
+<time>February 11, 2022</time>
+</div>
+</header><p><strong>Idempotence</strong><sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup> is a property of software that regardless of the number of
+times an operation is run, the final results (its output + side effects) are
+equivalent to running it only once.</p>
+<p>If you&rsquo;re performing an action at a given time, you could schedule a cron
+job and perform it at the desired time. The idempotent way of doing this would
+also include checks against <em>if you&rsquo;ve already done an action before.</em></p>
+<p>In some software, this might be overkill. In many cases, this property
+of software is <strong>critical</strong> to your success, whether it be software that
+performs financial transactions<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup> or sends notifications to users.</p>
+<h2 id=why-do-i-need-to-worry-about-this>Why do I need to worry about this?</h2>
+<p>There are many reasons software might require this property:</p>
+<ul>
+<li>your server went down while the code may or may not have performed an
+action</li>
+<li>you may need to update the code to be able to execute it again, but without
+side effects due to re-running the code</li>
+<li>your data pipeline received data late, and therefore needs to be re-run for
+the late time-range</li>
+</ul>
+<p>In any case, it should only take a little extra thought to figure out that
+you&rsquo;ve run into any case like these.</p>
+<p>With cloud computing being so common, failure is almost expected of
+your hardware<sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup>. How you handle error scenarios is all based on <em>risk</em>. You&rsquo;ll
+want to apply idempotency to software where you <em>can&rsquo;t</em> take the risk that your
+code will generate additional side effects if re-run.</p>
+<h2 id=example-1-notifications>Example 1: Notifications</h2>
+<p>Email marketing is a common solution to reaching out to the masses about your
+product, blog, or feature update. A simple solution could be:</p>
+<ol>
+<li>Gather a list of recipients that need to be emailed</li>
+<li>Iterate over the list and email them</li>
+</ol>
+<p>However, there could be issues with running this in production. This process is
+not idempotent, and can create a larger issue if it fails in the middle or is
+processed multiple times.</p>
+<p>If we want to enable idempotency, you could do the following (changes in bold):</p>
+<ol>
+<li>Gather a list of recipients <strong>that haven&rsquo;t received this email</strong></li>
+<li>Iterate over the list and email them, <strong>marking them off as you go</strong></li>
+</ol>
+<p>Now, if you run the process again, it will only notify those that haven&rsquo;t
+already received the email.</p>
+<h2 id=example-2-data-processing>Example 2: Data Processing</h2>
+<p>Data is another common example that is ever-present in software nowadays.
+Something as simple as a user login count could easily be implemented like this:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=k>UPDATE</span><span class=w> </span><span class=n>users</span><span class=w> </span><span class=k>SET</span><span class=w> </span><span class=n>login_count</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>login_count</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>id</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=o>&lt;</span><span class=n>id</span><span class=o>&gt;</span><span class=p>;</span><span class=w>
+</span></code></pre></div><p>As we can see, there are two main issues with this statement:</p>
+<ol>
+<li><strong>It&rsquo;s not idempotent!</strong> Running it multiple times (software bug, login spam)
+will result in a invalid count that shows signs of the number of times it was
+run.</li>
+<li><strong>You can&rsquo;t retrace your steps!</strong> You only have the final count in the DB;
+unless you load a DB backup and re-run your API logs against it, you can&rsquo;t
+reconcile the login count of a user if there was an issue.</li>
+</ol>
+<p>Let&rsquo;s try this again, but include a path for idempotency. If we keep a log of
+logins that are performed by users, we could utilize this table:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=k>INSERT</span><span class=w> </span><span class=k>INTO</span><span class=w> </span><span class=n>user_logins</span><span class=w>
+</span><span class=w>  </span><span class=p>(</span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>user_id</span><span class=p>,</span><span class=w> </span><span class=k>timestamp</span><span class=p>)</span><span class=w>
+</span><span class=w></span><span class=k>VALUES</span><span class=w>
+</span><span class=w>  </span><span class=p>(</span><span class=o>&lt;</span><span class=n>id</span><span class=o>&gt;</span><span class=p>,</span><span class=w> </span><span class=o>&lt;</span><span class=n>user_id</span><span class=o>&gt;</span><span class=p>,</span><span class=w> </span><span class=n>now</span><span class=p>())</span><span class=w>
+</span><span class=w></span><span class=k>ON</span><span class=w> </span><span class=n>CONFLICT</span><span class=p>(</span><span class=n>id</span><span class=p>)</span><span class=w> </span><span class=k>DO</span><span class=w> </span><span class=k>NOTHING</span><span class=p>;</span><span class=w>
+</span></code></pre></div><table>
+<thead>
+<tr>
+<th style=text-align:left>ID</th>
+<th style=text-align:left>User ID</th>
+<th style=text-align:left>Timestamp</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style=text-align:left>1</td>
+<td style=text-align:left>1</td>
+<td style=text-align:left>2022-02-09 00:02:23</td>
+</tr>
+<tr>
+<td style=text-align:left>2</td>
+<td style=text-align:left>1</td>
+<td style=text-align:left>2022-02-09 00:02:45</td>
+</tr>
+<tr>
+<td style=text-align:left>3</td>
+<td style=text-align:left>2</td>
+<td style=text-align:left>2022-02-09 00:02:46</td>
+</tr>
+<tr>
+<td style=text-align:left>4</td>
+<td style=text-align:left>2</td>
+<td style=text-align:left>2022-02-09 00:03:01</td>
+</tr>
+<tr>
+<td style=text-align:left>5</td>
+<td style=text-align:left>2</td>
+<td style=text-align:left>2022-02-09 00:04:26</td>
+</tr>
+</tbody>
+</table>
+<p>Since we assign an ID to each login request, we can dedup the results by the ID
+column. You can then perform a daily aggregation:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=k>INSERT</span><span class=w> </span><span class=k>INTO</span><span class=w> </span><span class=n>daily_user_counts</span><span class=w>
+</span><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=k>timestamp</span><span class=p>::</span><span class=nb>date</span><span class=p>,</span><span class=w> </span><span class=n>user_id</span><span class=p>,</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=k>count</span><span class=w>
+</span><span class=w></span><span class=k>FROM</span><span class=w> </span><span class=n>user_logins</span><span class=w>
+</span><span class=w></span><span class=k>WHERE</span><span class=w> </span><span class=k>timestamp</span><span class=p>::</span><span class=nb>date</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=o>&lt;</span><span class=nb>date</span><span class=o>&gt;</span><span class=w>
+</span><span class=w></span><span class=k>ON</span><span class=w> </span><span class=n>CONFLICT</span><span class=w> </span><span class=p>(</span><span class=n>user_id</span><span class=p>,</span><span class=w> </span><span class=nb>date</span><span class=p>)</span><span class=w> </span><span class=k>UPDATE</span><span class=w>
+</span><span class=w>  </span><span class=k>SET</span><span class=w> </span><span class=k>count</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>excluded</span><span class=p>.</span><span class=k>count</span><span class=p>;</span><span class=w>
+</span></code></pre></div><p>If this is ran one time or twenty times for the date <code>'2022-02-09'</code>, you&rsquo;ll
+always get the following result:</p>
+<table>
+<thead>
+<tr>
+<th style=text-align:left>User ID</th>
+<th style=text-align:left>Count</th>
+<th style=text-align:left>Date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style=text-align:left>1</td>
+<td style=text-align:left>2</td>
+<td style=text-align:left>2022-02-09</td>
+</tr>
+<tr>
+<td style=text-align:left>2</td>
+<td style=text-align:left>3</td>
+<td style=text-align:left>2022-02-09</td>
+</tr>
+</tbody>
+</table>
+<p>This way, the <em>entire data process</em><sup id=fnref:4><a href=#fn:4 class=footnote-ref role=doc-noteref>4</a></sup> is idempotent &ndash; the final results don&rsquo;t
+show any sign of the number of times it was run, and can safely be performed
+multiple times and deliver the same, accurate results.</p>
+<h2 id=idempotency-is-key>Idempotency is Key</h2>
+<p>Overall, Idempotency should be an all-time &ldquo;Great Software Principle You Should
+Know&rdquo;<sup>TM</sup>. It helps you build reliable software processes that can
+handle more of the unknowns that production systems can throw at you. When you
+have a critical process, idempotency can be one of the best tools to create a
+more resilient software solution.</p>
+<section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p><a href=https://en.wikipedia.org/wiki/Idempotence>Wikipedia, Idempotence</a>&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p>
+</li>
+<li id=fn:2 role=doc-endnote>
+<p>A great example is Stripe&rsquo;s
+<a href=https://stripe.com/blog/idempotency>Idempotency Key</a>&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p>
+</li>
+<li id=fn:3 role=doc-endnote>
+<p><em>When you think in terms of the blast radius, the question of failure is
+no longer a question of if but a matter of when.</em>
+<a href=https://aws.amazon.com/getting-started/fundamentals-core-concepts/>AWS Fundamentals</a>&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p>
+</li>
+<li id=fn:4 role=doc-endnote>
+<p>The process is idempotent, but the transform is <em>reproducable</em>.
+<a href=https://medium.com/ssense-tech/lets-get-idempotence-right-59f227178bb8>Let’s Get ‘Idempotence’ Right</a>&#160;<a href=#fnref:4 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</article>
+</main><footer id=footer>
+© 2022-present Chris Prijic (unless otherwise noted). Views are my own and do not necessarily reflect those of my employer.
+</br>
+All code is licensed under the
+<a rel=license href=https://opensource.org/licenses/MIT>MIT License</a>;
+other writing and media licensed under the
+<a rel=license href=https://creativecommons.org/licenses/by-sa/4.0/>
+Creative Commons Attribution-Share-Alike 4.0 International License</a>.
+</br>
+Built with
+<a href=https://gohugo.io/>Hugo</a>;
+theme derived from
+<a href=https://themes.gohugo.io/themes/etch/>Etch</a>.
+</footer></body>
+</html>
