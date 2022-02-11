@@ -115,14 +115,35 @@ always get the following result:
 This way, the _entire data process_[^4] is idempotent -- the final results don't
 show any sign of the number of times it was run, and can safely be performed
 multiple times and deliver the same, accurate results.
- 
+
+## What does this mean for "the bottom line"?
+
+> Ever heard a business professional complain that your software team spends too 
+> much time testing?
+
+I find it important to be able to talk to non-technical colleagues about the 
+importance of technical concepts. I find idempotency to bring a couple key 
+factors to software that a business benefits from. 
+
+1. **The lack of custom processes when something goes wrong.** If a data 
+   pipeline fails, you can fix the problem then run things back up-to-speed. You 
+   don't need to isolate data and come up with a custom patch to fix the time 
+   range you need to address. This adds up to faster turnaround times and 
+   overall safer processes.
+
+2. **Good software surprises your users and builds trust.** When software _Just 
+   Works_<sup>TM</sup>, then you could end up with software that surprises your 
+   users. It's like finding your hard work saved on a computer that crashed -- 
+   that additional care to keep track of yout state and make processes 
+   re-runnable makes for happier users and better trust in your software.
+
 ## Idempotency is Key
  
-Overall, Idempotency should be an all-time "Great Software Principle You Should
-Know"<sup>TM</sup>. It helps you build reliable software processes that can
-handle more of the unknowns that production systems can throw at you. When you
-have a critical process, idempotency can be one of the best tools to create a 
-more resilient software solution.
+This was just a brief introduction to the caveats of idempotency. It helps you 
+build reliable software processes that can handle more of the unknowns that 
+critical production systems can throw at you. When you have a critical process, 
+idempotency can be one of the best tools to create a more resilient software 
+solution.
  
 [^1]: [Wikipedia, Idempotence](https://en.wikipedia.org/wiki/Idempotence)
  
