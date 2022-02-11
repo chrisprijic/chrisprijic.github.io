@@ -1,7 +1,7 @@
 ---
 title: "Idempotency is Key"
-date: 2022-02-09T00:58:48-08:00
-draft: true
+date: 2022-02-11T14:00:00-08:00
+draft: false
 ---
  
 **Idempotence**[^1] is a property of software that regardless of the number of 
