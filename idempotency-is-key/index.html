@@ -159,12 +159,36 @@ always get the following result:</p>
 <p>This way, the <em>entire data process</em><sup id=fnref:4><a href=#fn:4 class=footnote-ref role=doc-noteref>4</a></sup> is idempotent &ndash; the final results don&rsquo;t
 show any sign of the number of times it was run, and can safely be performed
 multiple times and deliver the same, accurate results.</p>
+<h2 id=what-does-this-mean-for-the-bottom-line>What does this mean for &ldquo;the bottom line&rdquo;?</h2>
+<blockquote>
+<p>Ever heard a business professional complain that your software team spends too
+much time testing?</p>
+</blockquote>
+<p>I find it important to be able to talk to non-technical colleagues about the
+importance of technical concepts. I find idempotency to bring a couple key
+factors to software that a business benefits from.</p>
+<ol>
+<li>
+<p><strong>The lack of custom processes when something goes wrong.</strong> If a data
+pipeline fails, you can fix the problem then run things back up-to-speed. You
+don&rsquo;t need to isolate data and come up with a custom patch to fix the time
+range you need to address. This adds up to faster turnaround times and
+overall safer processes.</p>
+</li>
+<li>
+<p><strong>Good software surprises your users and builds trust.</strong> When software <em>Just
+Works</em><sup>TM</sup>, then you could end up with software that surprises your
+users. It&rsquo;s like finding your hard work saved on a computer that crashed &ndash;
+that additional care to keep track of yout state and make processes
+re-runnable makes for happier users and better trust in your software.</p>
+</li>
+</ol>
 <h2 id=idempotency-is-key>Idempotency is Key</h2>
-<p>Overall, Idempotency should be an all-time &ldquo;Great Software Principle You Should
-Know&rdquo;<sup>TM</sup>. It helps you build reliable software processes that can
-handle more of the unknowns that production systems can throw at you. When you
-have a critical process, idempotency can be one of the best tools to create a
-more resilient software solution.</p>
+<p>This was just a brief introduction to the caveats of idempotency. It helps you
+build reliable software processes that can handle more of the unknowns that
+critical production systems can throw at you. When you have a critical process,
+idempotency can be one of the best tools to create a more resilient software
+solution.</p>
 <section class=footnotes role=doc-endnotes>
 <hr>
 <ol>
