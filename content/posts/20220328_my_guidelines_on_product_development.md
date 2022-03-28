@@ -1,6 +1,6 @@
 ---
 title: "My Guidelines on Product Development"
-date: 2022-03-28T10:00:00-08:00
+date: 2022-03-28T10:00:00-07:00
 draft: false
 ---
  
@@ -8,9 +8,15 @@ _This is by no means a novel approach; however, I wanted to share my 2¢ and
 reflect the process._
  
 ![The different interpretations when a customer requests a feature](/img/product_development_swing.jpg)
- 
-When developing software, a common misconception can be thinking that what _you_
-know mixed with what requirements are given to you are known by everyone.
+<p style="text-align: center;font-size: 1.3rem;"><i>
+      Copyright © <a href="www.projectcartoon.com">www.projectcartoon.com</a> 
+      using the Creative Commons Attribution 3.0 Unported License
+</i></p>
+
+Variations of this image have circulated since the 1960's[^1] around the "Tree 
+Swing Picture". When developing software, a common misconception can be thinking 
+that what _you_ know mixed with what requirements are given to you are known by 
+everyone.
  
 A popular parallel to this process is the game of telephone, where by the end of
 the chain of people, you can likely get a completely different result from the
@@ -97,7 +103,7 @@ details, but keeping them up-to-date on your findings as well as making sure the
 solution you end up with is in line with their needs.
  
  
-#### 2. Build your Tracer Bullet[^1]
+#### 2. Build your Tracer Bullet[^2]
  
 At this point in the process, we understand the problem conceptually and
 technically, and have identified a solution that should work and meets the
@@ -159,7 +165,10 @@ feedback. If you take small steps, develop end-to-end as quickly as possible,
 and continuously iterate on that feedback, you're bound to build products that
 your customers want and keep coming back to use!
  
-[^1]: _Often these implementations are a 'quick shot' through all layers of an
+[^1]: _From [The "Project Cartoon" Root Cause](https://medium.com/@thx2001r/the-project-cartoon-root-cause-5e82e404ec8a)'s
+      article on the same cartoon. (Historical Link: https://archive.ph/FgxPK)
+
+[^2]: _Often these implementations are a 'quick shot' through all layers of an
       application, such as connecting a single form's input field to the
       back-end, to prove the layers connect as expected._
       ([Wikipedia](https://en.wikipedia.org/wiki/Scrum_(software_development)))
