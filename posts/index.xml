@@ -1,4 +1,139 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Chris Prijic</title><link>https://chrisprijic.com/posts/</link><description>Recent content in Posts on Chris Prijic</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Fri, 11 Feb 2022 14:00:00 -0800</lastBuildDate><atom:link href="https://chrisprijic.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Idempotency is Key</title><link>https://chrisprijic.com/idempotency-is-key/</link><pubDate>Fri, 11 Feb 2022 14:00:00 -0800</pubDate><guid>https://chrisprijic.com/idempotency-is-key/</guid><description>&lt;p>&lt;strong>Idempotence&lt;/strong>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> is a property of software that regardless of the number of
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Chris Prijic</title><link>https://chrisprijic.com/posts/</link><description>Recent content in Posts on Chris Prijic</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 28 Mar 2022 10:00:00 -0700</lastBuildDate><atom:link href="https://chrisprijic.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>My Guidelines on Product Development</title><link>https://chrisprijic.com/my-guidelines-on-product-development/</link><pubDate>Mon, 28 Mar 2022 10:00:00 -0700</pubDate><guid>https://chrisprijic.com/my-guidelines-on-product-development/</guid><description>&lt;p>&lt;em>This is by no means a novel approach; however, I wanted to share my 2¢ and
+reflect the process.&lt;/em>&lt;/p>
+&lt;p>&lt;img src="https://chrisprijic.com/img/product_development_swing.jpg" alt="The different interpretations when a customer requests a feature">&lt;/p>
+&lt;p style="text-align: center;font-size: 1.3rem;">&lt;i>
+Copyright © &lt;a href="www.projectcartoon.com">www.projectcartoon.com&lt;/a>
+using the Creative Commons Attribution 3.0 Unported License
+&lt;/i>&lt;/p>
+&lt;p>Variations of this image have circulated since the 1960&amp;rsquo;s&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> around the &amp;ldquo;Tree
+Swing Picture&amp;rdquo;. When developing software, a common misconception can be thinking
+that what &lt;em>you&lt;/em> know mixed with what requirements are given to you are known by
+everyone.&lt;/p>
+&lt;p>A popular parallel to this process is the game of telephone, where by the end of
+the chain of people, you can likely get a completely different result from the
+first person. Software product development can feel much like that.&lt;/p>
+&lt;p>One thing that can easily make this process smoother is by actively listening
+and asking questions. The more information you have at your disposal, the better
+you can develop a solution to the problem.&lt;/p>
+&lt;h2 id="what-to-listen-for">What to listen for&lt;/h2>
+&lt;p>When listening to the details of what is being requested, its important to
+listen for trigger phrases. These are phrases that should cause you to actively
+listen to each word they say right before or after that phrase. Some examples of
+this are:&lt;/p>
+&lt;ul>
+&lt;li>&lt;em>&amp;ldquo;Something that keeps me from &amp;hellip;&amp;rdquo;&lt;/em>&lt;/li>
+&lt;li>&lt;em>&amp;ldquo;All I really need is &amp;hellip;&amp;rdquo;&lt;/em>&lt;/li>
+&lt;li>&lt;em>&amp;ldquo;Once we can &amp;hellip;.&amp;rdquo;&lt;/em>&lt;/li>
+&lt;/ul>
+&lt;p>These phrases help you identify &lt;em>&lt;strong>pain points&lt;/strong>&lt;/em> in the current product.&lt;/p>
+&lt;h2 id="what-to-do-with-that-information">What to do with that information&lt;/h2>
+&lt;p>Don&amp;rsquo;t just run away with those pain points just yet! You have heard them &lt;em>in
+their first pass&lt;/em>.&lt;/p>
+&lt;p>This means you have heard it once, and have internalized &lt;u>your&lt;/u>
+interpretation of what was said. The very next thing you want to do is get on
+the same level of understanding with them.&lt;/p>
+&lt;p>Repeat back what you heard in your own words. Listen to how they respond, and
+ask for clarification wherever there might be a misalignment in your
+understanding. These clarifications and levels of understanding help solidify
+that you not only heard what the customer wants, but also have a level of
+understanding about it.&lt;/p>
+&lt;p>&lt;em>Note: This is also a great way to level up your communication when defending a
+point or persuading another. Reaching common ground that both sides can agree on
+gives you a foundation to step off from.&lt;/em>&lt;/p>
+&lt;h2 id="is-one-customer-enough">Is one customer enough?&lt;/h2>
+&lt;p>You received feedback from one customer. Sometimes, especially if
+they&amp;rsquo;re a cash cow or your primary customer, that could be enough. If you have
+some leeway with the deadline on addressing the concern, you&amp;rsquo;ll want to gather
+more feedback on similar issues with other customers.&lt;/p>
+&lt;p>The more people that are interested in a solution to the same or similar
+problem(s) can help you prioritize your work. Not just what is easy or hard to
+implement, but also by the impact a change can have on your customer base.&lt;/p>
+&lt;h2 id="development-is-underway">Development is underway!&lt;/h2>
+&lt;p>As you develop the solution, there&amp;rsquo;s two principles to instill in the process to
+help customers receive what they actually need:&lt;/p>
+&lt;ol>
+&lt;li>Continuous Feedback&lt;/li>
+&lt;li>Iterative Development&lt;/li>
+&lt;/ol>
+&lt;h3 id="continuous-feedback">Continuous Feedback&lt;/h3>
+&lt;p>&lt;strong>Always&lt;/strong> include your customers along the journey of development. If they
+provided feedback and have a vested interest in the solution being made, then
+they likely &lt;em>want&lt;/em> to provide feedback throughout the process.&lt;/p>
+&lt;p>I&amp;rsquo;ve grown into using three-pass process for this when the problem is not
+trivial.&lt;/p>
+&lt;h4 id="1-prototype-around-the-problem">1. Prototype around the problem&lt;/h4>
+&lt;p>Typically this is where you get your hands dirty with the problem itself. The
+understanding in words is brought to your software. If a solution is already in
+mind, you could start planning for that, and while you do, you might hit
+different roadblocks and try out different ways of approaching the problem.&lt;/p>
+&lt;p>By the end of this prototype, you should have a solid grasp on the problem,
+identified solutions that do and don&amp;rsquo;t solve the problem, and be able to start
+building the solution.&lt;/p>
+&lt;p>Your roadblocks and your conclusions here are two great areas in which
+communication with the customer is important. You don&amp;rsquo;t need to share all the
+details, but keeping them up-to-date on your findings as well as making sure the
+solution you end up with is in line with their needs.&lt;/p>
+&lt;h4 id="2-build-your-tracer-bullet2">2. Build your Tracer Bullet&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>&lt;/h4>
+&lt;p>At this point in the process, we understand the problem conceptually and
+technically, and have identified a solution that should work and meets the
+customer&amp;rsquo;s needs.&lt;/p>
+&lt;p>Development always then starts with a &amp;ldquo;Tracer Bullet&amp;rdquo;, where we make an MVP of
+the feature that hits all layers of the application &amp;ndash; front-end, back-end, etc.
+Once this is completed, it allows you to gather customer feedback iteratively
+as you flesh out the feature after this initial end-to-end implementation.&lt;/p>
+&lt;hr>
+&lt;p>At this point, you&amp;rsquo;ve built an MVP for the problem initially discussed! You have
+it implemented end-to-end so customers can start using it and providing feedback
+as you add additional features and requirements to it.&lt;/p>
+&lt;h3 id="iterative-development">Iterative Development&lt;/h3>
+&lt;p>When developing products and features, it&amp;rsquo;s important to do it iteratively. As
+you likely ascertained during the previous section on feedback, iterative
+development lets you take small, conscious steps towards an end-goal.&lt;/p>
+&lt;p>Imagine it like walking from one point in a forest to another, without paths or
+a map. If you do it iteratively, checking your progress against a compass, the
+sun, etc., you&amp;rsquo;ll likely divert a little but reach your goal.&lt;/p>
+&lt;p>On the other hand, if you try to beeline to the goal without checking your
+progress, you might find yourself at the end of the day way off course, on the
+other side of the forest &lt;em>further&lt;/em> from your goal!&lt;/p>
+&lt;h4 id="stable-ground">Stable Ground&lt;/h4>
+&lt;p>In college I had a professor in my Intro courses (shoutout Prof. Thorton!) who
+always talked about reaching &amp;ldquo;stable ground&amp;rdquo;. Each time your program compiles
+successfully and passes all tests, you commit your code. It was in each
+assignment in bold letters, usually accompanied by a first-step that could be
+taken when starting the assignment.&lt;/p>
+&lt;p>This advice was extremely effective in outlining a process that all software
+developers should use, but also in outlining what an effective &amp;ldquo;step&amp;rdquo; could be
+when solving problems in software development.&lt;/p>
+&lt;p>With product development, you want the same thing. After launching a new
+incremental feature, you should gather feedback and &lt;em>listen&lt;/em>. This practice will
+save you a lot of time in the long run when you are building solutions to your
+customers&amp;rsquo; problems that actually solve the problem for them. You can use each
+iteration as a way to check your progress to your goal.&lt;/p>
+&lt;p>Listening to your customers directly is the best type of feedback you can
+receive. However, you can also look at metrics &amp;ndash; product adoption, obstacles
+that keep users from adopting the new feature, and so on. Use the tools at your
+disposal to listen as much as you can to your customers&amp;rsquo; signals!&lt;/p>
+&lt;h2 id="product-development-is-a-journey">Product Development is a Journey&lt;/h2>
+&lt;p>Product development can be a daunting process, especially when starting a new
+product or finding those customers initially that can give you effective
+feedback. If you take small steps, develop end-to-end as quickly as possible,
+and continuously iterate on that feedback, you&amp;rsquo;re bound to build products that
+your customers want and keep coming back to use!&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>_From &lt;a href="https://medium.com/@thx2001r/the-project-cartoon-root-cause-5e82e404ec8a">The &amp;ldquo;Project Cartoon&amp;rdquo; Root Cause&lt;/a>&amp;rsquo;s
+article on the same cartoon. (Historical Link: &lt;a href="https://archive.ph/FgxPK">https://archive.ph/FgxPK&lt;/a>)&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>&lt;em>Often these implementations are a &amp;lsquo;quick shot&amp;rsquo; through all layers of an
+application, such as connecting a single form&amp;rsquo;s input field to the
+back-end, to prove the layers connect as expected.&lt;/em>
+(&lt;a href="https://en.wikipedia.org/wiki/Scrum_(software_development)">Wikipedia&lt;/a>)&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Idempotency is Key</title><link>https://chrisprijic.com/idempotency-is-key/</link><pubDate>Fri, 11 Feb 2022 14:00:00 -0800</pubDate><guid>https://chrisprijic.com/idempotency-is-key/</guid><description>&lt;p>&lt;strong>Idempotence&lt;/strong>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> is a property of software that regardless of the number of
 times an operation is run, the final results (its output + side effects) are
 equivalent to running it only once.&lt;/p>
 &lt;p>If you&amp;rsquo;re performing an action at a given time, you could schedule a cron
@@ -43,8 +178,8 @@ already received the email.&lt;/p>
 &lt;h2 id="example-2-data-processing">Example 2: Data Processing&lt;/h2>
 &lt;p>Data is another common example that is ever-present in software nowadays.
 Something as simple as a user login count could easily be implemented like this:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="k">UPDATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">login_count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">login_count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>As we can see, there are two main issues with this statement:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">UPDATE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">users&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">login_count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">login_count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>As we can see, there are two main issues with this statement:&lt;/p>
 &lt;ol>
 &lt;li>&lt;strong>It&amp;rsquo;s not idempotent!&lt;/strong> Running it multiple times (software bug, login spam)
 will result in a invalid count that shows signs of the number of times it was
@@ -55,12 +190,12 @@ reconcile the login count of a user if there was an issue.&lt;/li>
 &lt;/ol>
 &lt;p>Let&amp;rsquo;s try this again, but include a path for idempotency. If we keep a log of
 logins that are performed by users, we could utilize this table:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="k">INSERT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INTO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_logins&lt;/span>&lt;span class="w">
-&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">timestamp&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
-&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w">
-&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">now&lt;/span>&lt;span class="p">())&lt;/span>&lt;span class="w">
-&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">CONFLICT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOTHING&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;table>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">INSERT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INTO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_logins&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">timestamp&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">VALUES&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">now&lt;/span>&lt;span class="p">())&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">CONFLICT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NOTHING&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th style="text-align:left">ID&lt;/th>
@@ -98,13 +233,13 @@ logins that are performed by users, we could utilize this table:&lt;/p>
 &lt;/table>
 &lt;p>Since we assign an ID to each login request, we can dedup the results by the ID
 column. You can then perform a daily aggregation:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="k">INSERT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INTO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">daily_user_counts&lt;/span>&lt;span class="w">
-&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">timestamp&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">as&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">count&lt;/span>&lt;span class="w">
-&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_logins&lt;/span>&lt;span class="w">
-&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">timestamp&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="w">
-&lt;/span>&lt;span class="w">&lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">CONFLICT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">UPDATE&lt;/span>&lt;span class="w">
-&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">excluded&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="k">count&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>If this is ran one time or twenty times for the date &lt;code>'2022-02-09'&lt;/code>, you&amp;rsquo;ll
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">INSERT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">INTO&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">daily_user_counts&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">SELECT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">timestamp&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COUNT&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">as&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">count&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">FROM&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">user_logins&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">WHERE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">timestamp&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">ON&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">CONFLICT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">user_id&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">date&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">UPDATE&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">SET&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">count&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">excluded&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="k">count&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>If this is ran one time or twenty times for the date &lt;code>'2022-02-09'&lt;/code>, you&amp;rsquo;ll
 always get the following result:&lt;/p>
 &lt;table>
 &lt;thead>
