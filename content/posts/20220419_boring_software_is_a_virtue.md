@@ -1,6 +1,6 @@
 ---
 title: "Boring Software is a Virtue"
-date: 2022-04-19T09:00:00-07:00
+date: 2022-04-19T05:00:00-07:00
 draft: false
 ---
  
