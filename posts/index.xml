@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Chris Prijic</title><link>https://chrisprijic.com/posts/</link><description>Recent content in Posts on Chris Prijic</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 19 Apr 2022 05:00:00 -0700</lastBuildDate><atom:link href="https://chrisprijic.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Boring Software is a Virtue</title><link>https://chrisprijic.com/boring-software-is-a-virtue/</link><pubDate>Tue, 19 Apr 2022 05:00:00 -0700</pubDate><guid>https://chrisprijic.com/boring-software-is-a-virtue/</guid><description>&lt;p>This past month, I&amp;rsquo;ve had the chance to dive back in to pair-programming and
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Chris Prijic</title><link>https://chrisprijic.com/posts/</link><description>Recent content in Posts on Chris Prijic</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 19 Apr 2022 05:00:00 -0700</lastBuildDate><atom:link href="https://chrisprijic.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Boring Code is a Virtue</title><link>https://chrisprijic.com/boring-code-is-a-virtue/</link><pubDate>Tue, 19 Apr 2022 05:00:00 -0700</pubDate><guid>https://chrisprijic.com/boring-code-is-a-virtue/</guid><description>&lt;p>This past month, I&amp;rsquo;ve had the chance to dive back in to pair-programming and
 code reviews at a higher frequency than usual. This has given me the chance to
 reflect on my software development process and how it&amp;rsquo;s changed over time. This
 post covers some of the insights discovered during that reflection, and why much
@@ -124,15 +124,16 @@ often than not, performance tweaks will diverge based off of different
 scenarios, and likely without much forbearing ahead of time.&lt;/p>
 &lt;p>&lt;em>TL;DR: You can still program for performance and adhere to these guidelines;
 they are guidelines after-all, and not rules.&lt;/em>&lt;/p>
-&lt;h2 id="boring-software-is-a-virtue">Boring Software is a Virtue&lt;/h2>
+&lt;h2 id="boring-code-is-a-virtue">Boring Code is a Virtue&lt;/h2>
 &lt;p>So there it is! The most recent project I&amp;rsquo;ve worked on, I&amp;rsquo;ve been applying these
 principles. I&amp;rsquo;ve noticed that the code comes out boring! Why is that?&lt;/p>
 &lt;p>Well, the fun is in the process. When things &lt;em>just work&lt;/em>, and the process is
 &lt;em>just smooth&lt;/em>, and the details are &lt;em>documented and figured out&lt;/em>, then the
-software is more straightforward and easier to understand.&lt;/p>
+software is more straightforward and easier to understand. The complexity and
+intrigue lies in the design and architecture, the technology, and the solutions.&lt;/p>
 &lt;p>We&amp;rsquo;ve isolated terrible APIs from our business logic. We&amp;rsquo;ve broken down a
 complex business requirement into a well-documented process that a fresh hire
-was able to add new features to it in his first week. most of our code boils
+was able to modify and enhance in his first week. Most of our code boils
 down to checks (if/switch) and loops (for/while) to accomplish a vast majority
 of its tasks.&lt;/p>
 &lt;p>You don&amp;rsquo;t &lt;em>have&lt;/em> to use that &amp;ldquo;Next Framework&amp;rdquo;. I highly suggest trying these out

@@ -1,5 +1,5 @@
-<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Chris Prijic's personal website."><link rel=apple-touch-icon sizes=180x180 href=/img/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon-16x16.png><link rel=manifest href=/meta/site.webmanifest><link rel=stylesheet href=/css/style.min.css><title>Boring Software is a Virtue</title><script async src="https://www.googletagmanager.com/gtag/js?id=UA-33625943-1"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","UA-33625943-1")</script></head><body><header id=banner><h2><a href=https://chrisprijic.com/>Chris Prijic</a></h2><nav><ul><li><a href=/ title=posts>posts</a></li></ul></nav></header><main id=content><article><header id=post-header><h1>Boring Software is a Virtue</h1><div><time>April 19, 2022</time></div></header><p>This past month, I&rsquo;ve had the chance to dive back in to pair-programming and
+<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Chris Prijic's personal website."><link rel=apple-touch-icon sizes=180x180 href=/img/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon-16x16.png><link rel=manifest href=/meta/site.webmanifest><link rel=stylesheet href=/css/style.min.css><title>Boring Code is a Virtue</title><script async src="https://www.googletagmanager.com/gtag/js?id=UA-33625943-1"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","UA-33625943-1")</script></head><body><header id=banner><h2><a href=https://chrisprijic.com/>Chris Prijic</a></h2><nav><ul><li><a href=/ title=posts>posts</a></li></ul></nav></header><main id=content><article><header id=post-header><h1>Boring Code is a Virtue</h1><div><time>April 19, 2022</time></div></header><p>This past month, I&rsquo;ve had the chance to dive back in to pair-programming and
 code reviews at a higher frequency than usual. This has given me the chance to
 reflect on my software development process and how it&rsquo;s changed over time. This
 post covers some of the insights discovered during that reflection, and why much
@@ -77,12 +77,13 @@ software can get out of your way when you need to dive down into performance,
 then you can easily do so.</p><p><em>Don&rsquo;t move performance-specific code into an abstraction or library</em>. More
 often than not, performance tweaks will diverge based off of different
 scenarios, and likely without much forbearing ahead of time.</p><p><em>TL;DR: You can still program for performance and adhere to these guidelines;
-they are guidelines after-all, and not rules.</em></p><h2 id=boring-software-is-a-virtue>Boring Software is a Virtue</h2><p>So there it is! The most recent project I&rsquo;ve worked on, I&rsquo;ve been applying these
+they are guidelines after-all, and not rules.</em></p><h2 id=boring-code-is-a-virtue>Boring Code is a Virtue</h2><p>So there it is! The most recent project I&rsquo;ve worked on, I&rsquo;ve been applying these
 principles. I&rsquo;ve noticed that the code comes out boring! Why is that?</p><p>Well, the fun is in the process. When things <em>just work</em>, and the process is
 <em>just smooth</em>, and the details are <em>documented and figured out</em>, then the
-software is more straightforward and easier to understand.</p><p>We&rsquo;ve isolated terrible APIs from our business logic. We&rsquo;ve broken down a
+software is more straightforward and easier to understand. The complexity and
+intrigue lies in the design and architecture, the technology, and the solutions.</p><p>We&rsquo;ve isolated terrible APIs from our business logic. We&rsquo;ve broken down a
 complex business requirement into a well-documented process that a fresh hire
-was able to add new features to it in his first week. most of our code boils
+was able to modify and enhance in his first week. Most of our code boils
 down to checks (if/switch) and loops (for/while) to accomplish a vast majority
 of its tasks.</p><p>You don&rsquo;t <em>have</em> to use that &ldquo;Next Framework&rdquo;. I highly suggest trying these out
 in your next project.</p><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p><a href=https://caseymuratori.com/blog_0016>Complexity and Granularity</a>,
