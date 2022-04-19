@@ -1,5 +1,5 @@
 ---
-title: "Boring Software is a Virtue"
+title: "Boring Code is a Virtue"
 date: 2022-04-19T05:00:00-07:00
 draft: false
 ---
@@ -171,18 +171,19 @@ scenarios, and likely without much forbearing ahead of time.
 _TL;DR: You can still program for performance and adhere to these guidelines;
 they are guidelines after-all, and not rules._
  
-## Boring Software is a Virtue
+## Boring Code is a Virtue
  
 So there it is! The most recent project I've worked on, I've been applying these
 principles. I've noticed that the code comes out boring! Why is that?
  
 Well, the fun is in the process. When things _just work_, and the process is
 _just smooth_, and the details are _documented and figured out_, then the
-software is more straightforward and easier to understand.
+software is more straightforward and easier to understand. The complexity and 
+intrigue lies in the design and architecture, the technology, and the solutions.
  
 We've isolated terrible APIs from our business logic. We've broken down a
 complex business requirement into a well-documented process that a fresh hire
-was able to add new features to it in his first week. most of our code boils 
+was able to modify and enhance in his first week. Most of our code boils 
 down to checks (if/switch) and loops (for/while) to accomplish a vast majority 
 of its tasks.
  
