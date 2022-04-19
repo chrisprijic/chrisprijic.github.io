@@ -1,4 +1,161 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Home on Chris Prijic</title><link>https://chrisprijic.com/</link><description>Recent content in Home on Chris Prijic</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 28 Mar 2022 10:00:00 -0700</lastBuildDate><atom:link href="https://chrisprijic.com/index.xml" rel="self" type="application/rss+xml"/><item><title>My Guidelines on Product Development</title><link>https://chrisprijic.com/my-guidelines-on-product-development/</link><pubDate>Mon, 28 Mar 2022 10:00:00 -0700</pubDate><guid>https://chrisprijic.com/my-guidelines-on-product-development/</guid><description>&lt;p>&lt;em>This is by no means a novel approach; however, I wanted to share my 2¢ and
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Home on Chris Prijic</title><link>https://chrisprijic.com/</link><description>Recent content in Home on Chris Prijic</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 19 Apr 2022 05:00:00 -0700</lastBuildDate><atom:link href="https://chrisprijic.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Boring Software is a Virtue</title><link>https://chrisprijic.com/boring-software-is-a-virtue/</link><pubDate>Tue, 19 Apr 2022 05:00:00 -0700</pubDate><guid>https://chrisprijic.com/boring-software-is-a-virtue/</guid><description>&lt;p>This past month, I&amp;rsquo;ve had the chance to dive back in to pair-programming and
+code reviews at a higher frequency than usual. This has given me the chance to
+reflect on my software development process and how it&amp;rsquo;s changed over time. This
+post covers some of the insights discovered during that reflection, and why much
+of the software I write today leans towards &amp;ldquo;boring&amp;rdquo;.&lt;/p>
+&lt;h2 id="granularity">Granularity&lt;/h2>
+&lt;p>I don&amp;rsquo;t think I can word this much better than Casey Muratori did in his own
+article on granularity and complexity&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>:&lt;/p>
+&lt;blockquote>
+&lt;p>&amp;ldquo;This is so easy to use, and yet it never gets in my way when I need to do
+something tricky!&amp;rdquo;&lt;/p>
+&lt;/blockquote>
+&lt;p>Ever since I read this post back in college, I&amp;rsquo;ve found myself trying to provide
+granular layers to software I build. This means that as we add new features,
+we can (and often do) support the feature at a few different levels of
+granularity where it fits in well; other times we support the feature directly
+in its specific areas when it doesn&amp;rsquo;t generalize to other levels of convenience.&lt;/p>
+&lt;p>Imagine an ORM that doesn&amp;rsquo;t let you also run raw SQL directly when you need to,
+or a car that doesn&amp;rsquo;t let you control the speed of your vehicle except through
+your cruise-control interface. These systems grant additional layers of control
+that interface with each other in ways that let those &amp;ldquo;convenient&amp;rdquo; solutions get
+out of your way when you need to do something more specific or complex.&lt;/p>
+&lt;p>&lt;em>TL;DR: support multiple layers of granularity in your software, so that you can
+help developers at multiple levels over an opt-in/out status.&lt;/em>&lt;/p>
+&lt;h2 id="libraries-and-abstractions">Libraries and Abstractions&lt;/h2>
+&lt;p>In the same way, libraries and abstractions are an interesting topic. SOLID and
+DRY are very often prevalent in software development circles, but they also have
+downsides.&lt;/p>
+&lt;p>As you try to write software to support a variety of use-cases, there&amp;rsquo;s a good
+chance that not &lt;em>every&lt;/em> use case or feature should be supported. I&amp;rsquo;ve leaned
+towards two specific rules in the past few years I try to adhere to:&lt;/p>
+&lt;ul>
+&lt;li>Libraries, not Frameworks&lt;/li>
+&lt;li>The smaller and more specific a library is, the better&lt;/li>
+&lt;/ul>
+&lt;p>Let&amp;rsquo;s break those down.&lt;/p>
+&lt;h3 id="libraries-not-frameworks">Libraries, not Frameworks&lt;/h3>
+&lt;p>This one is pretty easy for me. Frameworks typically force you to adhere to
+conventions over configuration. The unfortunate side-effect of this is that they
+then typically &lt;em>get in your way&lt;/em> when you need to do something different than
+how they&amp;rsquo;d like you to accomplish that. Learning how to efficiently tune a rails
+API is not exactly the greatest experience I&amp;rsquo;ve had. It&amp;rsquo;s gotten much easier
+over the years, but frameworks still force you to bend to &lt;em>their&lt;/em> will.&lt;/p>
+&lt;p>Libraries, on the other hand, are entirely optional. Don&amp;rsquo;t want to use it? Then
+don&amp;rsquo;t! Want to use just a part of it and not the whole thing? Go right ahead!
+Many times, I&amp;rsquo;ve found myself supporting my team with features in libraries, so
+they can feel free to build their products and services how they choose.&lt;/p>
+&lt;p>&lt;em>Disclaimer: This doesn&amp;rsquo;t mean it&amp;rsquo;s the Wild West on the team! It just means
+that people aren&amp;rsquo;t forced to adhere to a specific, restrictive way of developing
+software. Each team and service has their own set of criteria and can build as
+fits best for their goals.&lt;/em>&lt;/p>
+&lt;h3 id="the-smaller-and-more-specific-the-better">The smaller and more specific, the better&lt;/h3>
+&lt;p>We have a UUID library we use internally. Outside of it largely being a wrapper
+of an open-source library, it only contains a couple extra helper functions
+we&amp;rsquo;ve seen written in &lt;em>every service we have&lt;/em>.&lt;/p>
+&lt;p>For example, the following:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">PUuid2PStr&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">input&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">uuid&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">UUID&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">input&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">s&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">input&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">String&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Since we translate UUIDs to Strings and vice-versa at different layers of our
+services&amp;rsquo; stacks, adding these functions helped considerably. These are also
+technical concerns and not business ones&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>, so sharing them across services is
+likely fine. If a service has other rules in mind, they can easily just not use
+this function and make one of their own.&lt;/p>
+&lt;p>Since its a good goal to keep the dependencies low on the software you
+write&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>, I also find it important that the dependencies are small and specific
+to make the process of keeping them up-to-date as simple as possible as well.&lt;/p>
+&lt;p>&lt;em>TL;DR: small composable libraries reduce the drawbacks of using those
+dependencies in other software.&lt;/em>&lt;/p>
+&lt;h1 id="comments-and-reviews">Comments and Reviews&lt;/h1>
+&lt;p>The more code reviews I do, and the more software I maintain, I&amp;rsquo;ve found myself
+leaning on adding any comments I make in a PR or review to the code itself.&lt;/p>
+&lt;p>Comments are a may to more easily come back to code that can speak to what the
+code doesn&amp;rsquo;t already tell you. For example, I needed to install docker-compose
+inside an already dockerized environment. I could have done this:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># install dependencies&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apk add --no-cache bash curl git python3-dev py-pip libffi-dev openssl-dev &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> gcc libc-dev rust cargo make openssh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>However, coming back to this CI pipeline script later, I might wonder why we
+need all of these libraries installed in the first place. Removing/changing them
+only to realize they&amp;rsquo;re all needed. But &lt;em>&lt;em>why&lt;/em>&lt;/em>?&lt;/p>
+&lt;p>What I did instead, is cover what the code doesn&amp;rsquo;t already tell you:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Re: https://docs.docker.com/compose/install/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># under &amp;#34;Alternative install options&amp;#34; there is an &amp;#34;Install as a container&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># section that did not work on Bitbucket Pipelines.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># They do list the alpine packages we need, however; so I set that up here.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># added git and openssh for use by Golang&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apk add --no-cache bash curl git python3-dev py-pip libffi-dev openssl-dev &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> gcc libc-dev rust cargo make openssh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This points them to:&lt;/p>
+&lt;ul>
+&lt;li>Where I discovered what I need to install&lt;/li>
+&lt;li>What &lt;em>didn&amp;rsquo;t&lt;/em> work if they tried this from scratch themselves&lt;/li>
+&lt;li>What additional packages I&amp;rsquo;ve added to support other use-cases&lt;/li>
+&lt;li>Any additional comments I have on the process of getting here&lt;/li>
+&lt;/ul>
+&lt;p>This is all in hopes that this makes the life easier for any developer that
+needs to read/modify/remove this script for any reason.&lt;/p>
+&lt;p>Most of the time, software development is iterative. If you did iterate and know
+what has worked and what has not, documenting that in the code could help future
+developers (most likely yourself too!) from questioning or re-creating those
+same mistakes. Leaving these in the code (rather than a PR or separate document)
+makes it easier to find when working on that same code.&lt;/p>
+&lt;p>&lt;em>TL;DR: focus on the &lt;em>why&lt;/em> over the &lt;em>what&lt;/em> and &lt;em>how&lt;/em>.&lt;/em>&lt;/p>
+&lt;h1 id="performance">Performance&lt;/h1>
+&lt;p>Lastly I wanted to touch on performance briefly. Performance &lt;em>can&lt;/em> contradict
+everything else in this post; however, I do want to mention that these ideas can
+instead be used to &lt;em>support&lt;/em> performance constraints instead.&lt;/p>
+&lt;p>&lt;em>Use comments to explain what performance-constrained code does&lt;/em>. This is one
+area where explaining what is happening with a comment can be useful, because
+the code is no longer written for readability.&lt;/p>
+&lt;p>&lt;em>Granularity can be used so your performance-centric code is out-of-the-way of
+the more convenient areas of code.&lt;/em> If libraries and other parts of your
+software can get out of your way when you need to dive down into performance,
+then you can easily do so.&lt;/p>
+&lt;p>&lt;em>Don&amp;rsquo;t move performance-specific code into an abstraction or library&lt;/em>. More
+often than not, performance tweaks will diverge based off of different
+scenarios, and likely without much forbearing ahead of time.&lt;/p>
+&lt;p>&lt;em>TL;DR: You can still program for performance and adhere to these guidelines;
+they are guidelines after-all, and not rules.&lt;/em>&lt;/p>
+&lt;h2 id="boring-software-is-a-virtue">Boring Software is a Virtue&lt;/h2>
+&lt;p>So there it is! The most recent project I&amp;rsquo;ve worked on, I&amp;rsquo;ve been applying these
+principles. I&amp;rsquo;ve noticed that the code comes out boring! Why is that?&lt;/p>
+&lt;p>Well, the fun is in the process. When things &lt;em>just work&lt;/em>, and the process is
+&lt;em>just smooth&lt;/em>, and the details are &lt;em>documented and figured out&lt;/em>, then the
+software is more straightforward and easier to understand.&lt;/p>
+&lt;p>We&amp;rsquo;ve isolated terrible APIs from our business logic. We&amp;rsquo;ve broken down a
+complex business requirement into a well-documented process that a fresh hire
+was able to add new features to it in his first week. most of our code boils
+down to checks (if/switch) and loops (for/while) to accomplish a vast majority
+of its tasks.&lt;/p>
+&lt;p>You don&amp;rsquo;t &lt;em>have&lt;/em> to use that &amp;ldquo;Next Framework&amp;rdquo;. I highly suggest trying these out
+in your next project.&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>&lt;a href="https://caseymuratori.com/blog_0016">Complexity and Granularity&lt;/a>,
+Part 2 in a series of articles on Casey Muratori&amp;rsquo;s approach to software
+development.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>&lt;a href="https://phauer.com/2016/dont-share-libraries-among-microservices/">Don&amp;rsquo;t Share Libraries among Microservices&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>Check out &lt;a href="https://snyk.io/blog/peacenotwar-malicious-npm-node-ipc-package-vulnerability/">this&lt;/a>
+and &lt;a href="https://snyk.io/blog/open-source-npm-packages-colors-faker/">this&lt;/a>;
+both vulnerabilities occured &lt;em>just this year&lt;/em> in very common packages on
+NPM.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>My Guidelines on Product Development</title><link>https://chrisprijic.com/my-guidelines-on-product-development/</link><pubDate>Mon, 28 Mar 2022 10:00:00 -0700</pubDate><guid>https://chrisprijic.com/my-guidelines-on-product-development/</guid><description>&lt;p>&lt;em>This is by no means a novel approach; however, I wanted to share my 2¢ and
 reflect the process.&lt;/em>&lt;/p>
 &lt;p>&lt;img src="https://chrisprijic.com/img/product_development_swing.jpg" alt="The different interpretations when a customer requests a feature">&lt;/p>
 &lt;p style="text-align: center;font-size: 1.3rem;">&lt;i>

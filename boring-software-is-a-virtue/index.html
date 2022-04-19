@@ -1,0 +1,101 @@
+<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Chris Prijic's personal website."><link rel=apple-touch-icon sizes=180x180 href=/img/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon-16x16.png><link rel=manifest href=/meta/site.webmanifest><link rel=stylesheet href=/css/style.min.css><title>Boring Software is a Virtue</title><script async src="https://www.googletagmanager.com/gtag/js?id=UA-33625943-1"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","UA-33625943-1")</script></head><body><header id=banner><h2><a href=https://chrisprijic.com/>Chris Prijic</a></h2><nav><ul><li><a href=/ title=posts>posts</a></li></ul></nav></header><main id=content><article><header id=post-header><h1>Boring Software is a Virtue</h1><div><time>April 19, 2022</time></div></header><p>This past month, I&rsquo;ve had the chance to dive back in to pair-programming and
+code reviews at a higher frequency than usual. This has given me the chance to
+reflect on my software development process and how it&rsquo;s changed over time. This
+post covers some of the insights discovered during that reflection, and why much
+of the software I write today leans towards &ldquo;boring&rdquo;.</p><h2 id=granularity>Granularity</h2><p>I don&rsquo;t think I can word this much better than Casey Muratori did in his own
+article on granularity and complexity<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>:</p><blockquote><p>&ldquo;This is so easy to use, and yet it never gets in my way when I need to do
+something tricky!&rdquo;</p></blockquote><p>Ever since I read this post back in college, I&rsquo;ve found myself trying to provide
+granular layers to software I build. This means that as we add new features,
+we can (and often do) support the feature at a few different levels of
+granularity where it fits in well; other times we support the feature directly
+in its specific areas when it doesn&rsquo;t generalize to other levels of convenience.</p><p>Imagine an ORM that doesn&rsquo;t let you also run raw SQL directly when you need to,
+or a car that doesn&rsquo;t let you control the speed of your vehicle except through
+your cruise-control interface. These systems grant additional layers of control
+that interface with each other in ways that let those &ldquo;convenient&rdquo; solutions get
+out of your way when you need to do something more specific or complex.</p><p><em>TL;DR: support multiple layers of granularity in your software, so that you can
+help developers at multiple levels over an opt-in/out status.</em></p><h2 id=libraries-and-abstractions>Libraries and Abstractions</h2><p>In the same way, libraries and abstractions are an interesting topic. SOLID and
+DRY are very often prevalent in software development circles, but they also have
+downsides.</p><p>As you try to write software to support a variety of use-cases, there&rsquo;s a good
+chance that not <em>every</em> use case or feature should be supported. I&rsquo;ve leaned
+towards two specific rules in the past few years I try to adhere to:</p><ul><li>Libraries, not Frameworks</li><li>The smaller and more specific a library is, the better</li></ul><p>Let&rsquo;s break those down.</p><h3 id=libraries-not-frameworks>Libraries, not Frameworks</h3><p>This one is pretty easy for me. Frameworks typically force you to adhere to
+conventions over configuration. The unfortunate side-effect of this is that they
+then typically <em>get in your way</em> when you need to do something different than
+how they&rsquo;d like you to accomplish that. Learning how to efficiently tune a rails
+API is not exactly the greatest experience I&rsquo;ve had. It&rsquo;s gotten much easier
+over the years, but frameworks still force you to bend to <em>their</em> will.</p><p>Libraries, on the other hand, are entirely optional. Don&rsquo;t want to use it? Then
+don&rsquo;t! Want to use just a part of it and not the whole thing? Go right ahead!
+Many times, I&rsquo;ve found myself supporting my team with features in libraries, so
+they can feel free to build their products and services how they choose.</p><p><em>Disclaimer: This doesn&rsquo;t mean it&rsquo;s the Wild West on the team! It just means
+that people aren&rsquo;t forced to adhere to a specific, restrictive way of developing
+software. Each team and service has their own set of criteria and can build as
+fits best for their goals.</em></p><h3 id=the-smaller-and-more-specific-the-better>The smaller and more specific, the better</h3><p>We have a UUID library we use internally. Outside of it largely being a wrapper
+of an open-source library, it only contains a couple extra helper functions
+we&rsquo;ve seen written in <em>every service we have</em>.</p><p>For example, the following:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>PUuid2PStr</span><span class=p>(</span><span class=nx>input</span> <span class=o>*</span><span class=nx>uuid</span><span class=p>.</span><span class=nx>UUID</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>input</span> <span class=o>==</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=nx>s</span> <span class=o>:=</span> <span class=nx>input</span><span class=p>.</span><span class=nf>String</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=o>&amp;</span><span class=nx>s</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>Since we translate UUIDs to Strings and vice-versa at different layers of our
+services&rsquo; stacks, adding these functions helped considerably. These are also
+technical concerns and not business ones<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>, so sharing them across services is
+likely fine. If a service has other rules in mind, they can easily just not use
+this function and make one of their own.</p><p>Since its a good goal to keep the dependencies low on the software you
+write<sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup>, I also find it important that the dependencies are small and specific
+to make the process of keeping them up-to-date as simple as possible as well.</p><p><em>TL;DR: small composable libraries reduce the drawbacks of using those
+dependencies in other software.</em></p><h1 id=comments-and-reviews>Comments and Reviews</h1><p>The more code reviews I do, and the more software I maintain, I&rsquo;ve found myself
+leaning on adding any comments I make in a PR or review to the code itself.</p><p>Comments are a may to more easily come back to code that can speak to what the
+code doesn&rsquo;t already tell you. For example, I needed to install docker-compose
+inside an already dockerized environment. I could have done this:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># install dependencies</span>
+</span></span><span class=line><span class=cl>apk add --no-cache bash curl git python3-dev py-pip libffi-dev openssl-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    gcc libc-dev rust cargo make openssh
+</span></span></code></pre></div><p>However, coming back to this CI pipeline script later, I might wonder why we
+need all of these libraries installed in the first place. Removing/changing them
+only to realize they&rsquo;re all needed. But <em><em>why</em></em>?</p><p>What I did instead, is cover what the code doesn&rsquo;t already tell you:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># Re: https://docs.docker.com/compose/install/</span>
+</span></span><span class=line><span class=cl><span class=c1># under &#34;Alternative install options&#34; there is an &#34;Install as a container&#34;</span>
+</span></span><span class=line><span class=cl><span class=c1># section that did not work on Bitbucket Pipelines.</span>
+</span></span><span class=line><span class=cl><span class=c1># They do list the alpine packages we need, however; so I set that up here.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># added git and openssh for use by Golang</span>
+</span></span><span class=line><span class=cl>apk add --no-cache bash curl git python3-dev py-pip libffi-dev openssl-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    gcc libc-dev rust cargo make openssh
+</span></span></code></pre></div><p>This points them to:</p><ul><li>Where I discovered what I need to install</li><li>What <em>didn&rsquo;t</em> work if they tried this from scratch themselves</li><li>What additional packages I&rsquo;ve added to support other use-cases</li><li>Any additional comments I have on the process of getting here</li></ul><p>This is all in hopes that this makes the life easier for any developer that
+needs to read/modify/remove this script for any reason.</p><p>Most of the time, software development is iterative. If you did iterate and know
+what has worked and what has not, documenting that in the code could help future
+developers (most likely yourself too!) from questioning or re-creating those
+same mistakes. Leaving these in the code (rather than a PR or separate document)
+makes it easier to find when working on that same code.</p><p><em>TL;DR: focus on the <em>why</em> over the <em>what</em> and <em>how</em>.</em></p><h1 id=performance>Performance</h1><p>Lastly I wanted to touch on performance briefly. Performance <em>can</em> contradict
+everything else in this post; however, I do want to mention that these ideas can
+instead be used to <em>support</em> performance constraints instead.</p><p><em>Use comments to explain what performance-constrained code does</em>. This is one
+area where explaining what is happening with a comment can be useful, because
+the code is no longer written for readability.</p><p><em>Granularity can be used so your performance-centric code is out-of-the-way of
+the more convenient areas of code.</em> If libraries and other parts of your
+software can get out of your way when you need to dive down into performance,
+then you can easily do so.</p><p><em>Don&rsquo;t move performance-specific code into an abstraction or library</em>. More
+often than not, performance tweaks will diverge based off of different
+scenarios, and likely without much forbearing ahead of time.</p><p><em>TL;DR: You can still program for performance and adhere to these guidelines;
+they are guidelines after-all, and not rules.</em></p><h2 id=boring-software-is-a-virtue>Boring Software is a Virtue</h2><p>So there it is! The most recent project I&rsquo;ve worked on, I&rsquo;ve been applying these
+principles. I&rsquo;ve noticed that the code comes out boring! Why is that?</p><p>Well, the fun is in the process. When things <em>just work</em>, and the process is
+<em>just smooth</em>, and the details are <em>documented and figured out</em>, then the
+software is more straightforward and easier to understand.</p><p>We&rsquo;ve isolated terrible APIs from our business logic. We&rsquo;ve broken down a
+complex business requirement into a well-documented process that a fresh hire
+was able to add new features to it in his first week. most of our code boils
+down to checks (if/switch) and loops (for/while) to accomplish a vast majority
+of its tasks.</p><p>You don&rsquo;t <em>have</em> to use that &ldquo;Next Framework&rdquo;. I highly suggest trying these out
+in your next project.</p><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p><a href=https://caseymuratori.com/blog_0016>Complexity and Granularity</a>,
+Part 2 in a series of articles on Casey Muratori&rsquo;s approach to software
+development.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote><p><a href=https://phauer.com/2016/dont-share-libraries-among-microservices/>Don&rsquo;t Share Libraries among Microservices</a>&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote><p>Check out <a href=https://snyk.io/blog/peacenotwar-malicious-npm-node-ipc-package-vulnerability/>this</a>
+and <a href=https://snyk.io/blog/open-source-npm-packages-colors-faker/>this</a>;
+both vulnerabilities occured <em>just this year</em> in very common packages on
+NPM.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></article></main><footer id=footer><a href=https://twitter.com/chrisprijic>Twitter</a>
+|
+<a href=https://github.com/chrisprijic>Github</a></br>© 2022-present Chris Prijic (unless otherwise noted). Views are my own and do not necessarily reflect those of my employer.</br>All code is licensed under the
+<a rel=license href=https://opensource.org/licenses/MIT>MIT License</a>;
+other writing and media licensed under the
+<a rel=license href=https://creativecommons.org/licenses/by-sa/4.0/>Creative Commons Attribution-Share-Alike 4.0 International License</a>.</br>Built with
+<a href=https://gohugo.io/>Hugo</a>;
+theme derived from
+<a href=https://themes.gohugo.io/themes/etch/>Etch</a>.</footer></body></html>
