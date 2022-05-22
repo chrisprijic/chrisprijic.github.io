@@ -22,7 +22,7 @@ you must satisfy the following interface:&lt;/p>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>There&amp;rsquo;s also error wrapping, introduced in Go 1.13&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>. This lets you add
 additional context while also letting callers detect lower-level error types
 easily and effectively.&lt;/p>
-&lt;h3 id="how-i-handle-errors-in-go">How I handle errors in Go&lt;/h3>
+&lt;h2 id="how-i-handle-errors-in-go">How I handle errors in Go&lt;/h2>
 &lt;p>Let&amp;rsquo;s check out a practical (though simplified) example of copying a file
 (lifted and modified from Russ Cox&amp;rsquo;s Go 2 proposal&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>):&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">CopyFile&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">src&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">dst&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
@@ -78,7 +78,7 @@ error types automatically with a little extra code:&lt;/p>
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ... other cases
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="re-all-the-discourse-around-errors">Re: All the discourse around errors&lt;/h3>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="re-all-the-discourse-around-errors">Re: All the discourse around errors&lt;/h2>
 &lt;p>Go error handling is a somewhat devisive part of the language. You can easily
 discover a variety of material online already that speak to the stark contrast
 of those that like and dislike this feature of the language&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>.&lt;/p>
@@ -91,6 +91,25 @@ more time reading and understanding code, not writing it.&lt;/li>
 To this, I find explicit code flow to be easier to reason about and understand
 than it automatically returning these errors instead.&lt;/li>
 &lt;/ul>
+&lt;p>Let&amp;rsquo;s take a quick look at that second point in a little more detail.&lt;/p>
+&lt;h2 id="bubbling-errors">Bubbling errors&lt;/h2>
+&lt;p>I find it paramount for users of Go to understand the importance of the
+statement &lt;code>if err != nil {return err}&lt;/code>. Here&amp;rsquo;s why its so important.&lt;/p>
+&lt;p>First off, it tells you that whatever error is happening, the current code flow
+is not willing or able to handle it. A great example is a circuit breaker
+returning a &lt;code>4XX&lt;/code> error.&lt;/p>
+&lt;p>In this example, a circuit breaker should not get in your way except to handle
+the case that opens the circuit. If any other error should occur, it should
+transparently return the original error without modification. It has no reason
+nor purpose to modify a user-caused error.&lt;/p>
+&lt;p>If you want to add additional context to the error, you can use wrapping.You are
+still sharing details about the original error by &lt;em>wrapping&lt;/em> the error. Both
+the returned erro ras well as the original error are available to the caller and
+can be handled in whatever way is deemed fit for the situation.&lt;/p>
+&lt;h2 id="final-words">Final Words&lt;/h2>
+&lt;p>Error handling is a very challenging problem to tackle. Proper error handling
+and reporting requires a lot of code and isn&amp;rsquo;t easily solved using other error
+handling techniques, like exception throwing and handling.&lt;/p>
 &lt;p>It might seem daunting to have a bunch of error checking and mapping throughout
 your code; however, in practice I&amp;rsquo;ve seen the opposite effect. What little
 amount of additional code you have to write, you make up in the clarity of your
