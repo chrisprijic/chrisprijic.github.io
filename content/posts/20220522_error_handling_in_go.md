@@ -9,7 +9,7 @@ projects. This will be the first post of many where I look back at that
 experience and analyze a particular part of the language, as well as share some 
 common patterns and lessons I've learned along the way.
 
-## Error handling in Go
+---
 
 In Go, errors are _values_. This means they can be returned, operated on, and 
 passed around like any other values. Errors as values provides some great 
