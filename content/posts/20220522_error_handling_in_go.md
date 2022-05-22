@@ -12,7 +12,7 @@ common patterns and lessons I've learned along the way.
 ---
 
 In Go, errors are _values_. This means they can be returned, operated on, and 
-passed around like any other values. Errors as values provides some great 
+passed around like any other value. Errors as values provides some great 
 benefits:
 
 * explicit control flow throughout your application
