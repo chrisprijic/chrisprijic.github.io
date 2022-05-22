@@ -39,7 +39,7 @@ There's also error wrapping, introduced in Go 1.13[^2]. This lets you add
 additional context while also letting callers detect lower-level error types 
 easily and effectively.
 
-### How I handle errors in Go
+## How I handle errors in Go
 
 Let's check out a practical (though simplified) example of copying a file 
 (lifted and modified from Russ Cox's Go 2 proposal[^3]):
@@ -112,7 +112,7 @@ if err != nil {
 }
 ```
 
-### Re: All the discourse around errors
+## Re: All the discourse around errors
 
 Go error handling is a somewhat devisive part of the language. You can easily 
 discover a variety of material online already that speak to the stark contrast 
@@ -126,6 +126,33 @@ include the following (non-exhaustive) list:
 * _you keep copy/pasting the pattern `if err != nil {return err}`_ everywhere: 
   To this, I find explicit code flow to be easier to reason about and understand
   than it automatically returning these errors instead.
+
+Let's take a quick look at that second point in a little more detail.
+
+## Bubbling errors
+
+I find it paramount for users of Go to understand the importance of the 
+statement `if err != nil {return err}`. Here's why its so important.
+
+First off, it tells you that whatever error is happening, the current code flow
+is not willing or able to handle it. A great example is a circuit breaker 
+returning a `4XX` error.
+
+In this example, a circuit breaker should not get in your way except to handle
+the case that opens the circuit. If any other error should occur, it should
+transparently return the original error without modification. It has no reason
+nor purpose to modify a user-caused error.
+
+If you want to add additional context to the error, you can use wrapping.You are 
+still sharing details about the original error by _wrapping_ the error. Both 
+the returned erro ras well as the original error are available to the caller and 
+can be handled in whatever way is deemed fit for the situation.
+
+## Final Words
+
+Error handling is a very challenging problem to tackle. Proper error handling 
+and reporting requires a lot of code and isn't easily solved using other error
+handling techniques, like exception throwing and handling.
 
 It might seem daunting to have a bunch of error checking and mapping throughout 
 your code; however, in practice I've seen the opposite effect. What little 
