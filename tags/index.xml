@@ -1,4 +1,142 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tags on Chris Prijic</title><link>https://chrisprijic.com/tags/</link><description>Recent content in Tags on Chris Prijic</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><atom:link href="https://chrisprijic.com/tags/index.xml" rel="self" type="application/rss+xml"/><item><title>Boring Code is a Virtue</title><link>https://chrisprijic.com/boring-code-is-a-virtue/</link><pubDate>Tue, 19 Apr 2022 05:00:00 -0700</pubDate><guid>https://chrisprijic.com/boring-code-is-a-virtue/</guid><description>&lt;p>This past month, I&amp;rsquo;ve had the chance to dive back in to pair-programming and
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tags on Chris Prijic</title><link>https://chrisprijic.com/tags/</link><description>Recent content in Tags on Chris Prijic</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><atom:link href="https://chrisprijic.com/tags/index.xml" rel="self" type="application/rss+xml"/><item><title>Error Handling in Go</title><link>https://chrisprijic.com/error-handling-in-go/</link><pubDate>Sun, 22 May 2022 02:14:54 -0700</pubDate><guid>https://chrisprijic.com/error-handling-in-go/</guid><description>&lt;p>I&amp;rsquo;ve been using Go for five years now in both professional and personal
+projects. This will be the first post of many where I look back at that
+experience and analyze a particular part of the language, as well as share some
+common patterns and lessons I&amp;rsquo;ve learned along the way.&lt;/p>
+&lt;hr>
+&lt;p>In Go, errors are &lt;em>values&lt;/em>. This means they can be returned, operated on, and
+passed around like any other value. Errors as values provides some great
+benefits:&lt;/p>
+&lt;ul>
+&lt;li>explicit control flow throughout your application&lt;/li>
+&lt;li>the ability to enrich errors with additional, human-readable information&lt;/li>
+&lt;li>there&amp;rsquo;s no question if a method can error out or not&lt;/li>
+&lt;/ul>
+&lt;p>They are a core language type that only have one requirement. TO be an error,
+you must satisfy the following interface:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="kd">interface&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">Error&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="kt">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>You have a couple of ways to easily create errors:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">errors&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">New&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;this is a string --&amp;gt; error&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Errorf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;this does string formatting into an error: %v&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>There&amp;rsquo;s also error wrapping, introduced in Go 1.13&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>. This lets you add
+additional context while also letting callers detect lower-level error types
+easily and effectively.&lt;/p>
+&lt;h3 id="how-i-handle-errors-in-go">How I handle errors in Go&lt;/h3>
+&lt;p>Let&amp;rsquo;s check out a practical (though simplified) example of copying a file
+(lifted and modified from Russ Cox&amp;rsquo;s Go 2 proposal&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>):&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">CopyFile&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">src&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">dst&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">r&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">os&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">src&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Errorf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;error opening src file %s: %w&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">src&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">defer&lt;/span> &lt;span class="nx">r&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Close&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">w&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">os&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Create&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">dst&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Errorf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;error creating dst file %s: %w&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">dst&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">io&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Copy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">w&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">r&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">w&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Close&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">os&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Remove&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">dst&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Errorf&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;error copying file contents from %s to %s: %w&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">src&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">dst&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">w&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Close&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">os&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Remove&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">dst&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Errorf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;error closing dst file %s: %w&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">dst&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Here I modified the original code example with two changes:&lt;/p>
+&lt;ul>
+&lt;li>wrapping errors in &lt;code>fmt.Errorf&lt;/code> using &lt;code>%w&lt;/code>&lt;/li>
+&lt;li>modifying the error messages to include context about &lt;em>what&lt;/em> failed to happen&lt;/li>
+&lt;/ul>
+&lt;p>If you&amp;rsquo;re hacking or scripting, you can just log the error, but still get any
+context you might want from the printed error:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">CopyFile&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">src&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">dst&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatalf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Error: %v&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Here&amp;rsquo;s what a possible error prints out:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">error opening src file file.txt: open file.txt: no such file or directory
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Not only does it log that it failed to find such a file or directory, but also
+that it is the &lt;em>source&lt;/em> file that couldn&amp;rsquo;t be opened. What if you don&amp;rsquo;t know if
+the file was the source or destination file? The additional context added to the
+error message clears that up for you.&lt;/p>
+&lt;p>Alternatively, in automated or production use-cases, you can handle specific
+error types automatically with a little extra code:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">CopyFile&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;source.txt&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;dest.txt&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">switch&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">errors&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Is&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">os&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ErrNotExist&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// handle missing file error directly
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// ... other cases
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="re-all-the-discourse-around-errors">Re: All the discourse around errors&lt;/h3>
+&lt;p>Go error handling is a somewhat devisive part of the language. You can easily
+discover a variety of material online already that speak to the stark contrast
+of those that like and dislike this feature of the language&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>.&lt;/p>
+&lt;p>Many developers have issues with Go&amp;rsquo;s error handling patterns. Common complaints
+include the following (non-exhaustive) list:&lt;/p>
+&lt;ul>
+&lt;li>&lt;em>writing too much code for error handling&lt;/em>: To this, I say that we all spend
+more time reading and understanding code, not writing it.&lt;/li>
+&lt;li>&lt;em>you keep copy/pasting the pattern &lt;code>if err != nil {return err}&lt;/code>&lt;/em> everywhere:
+To this, I find explicit code flow to be easier to reason about and understand
+than it automatically returning these errors instead.&lt;/li>
+&lt;/ul>
+&lt;p>It might seem daunting to have a bunch of error checking and mapping throughout
+your code; however, in practice I&amp;rsquo;ve seen the opposite effect. What little
+amount of additional code you have to write, you make up in the clarity of your
+code&amp;rsquo;s flow control, while also reducing your cognitive load on keeping track of
+what the code is doing.&lt;/p>
+&lt;p>Let&amp;rsquo;s look at Rust, which supports &lt;code>Result&amp;lt;T, E&amp;gt;&lt;/code>, the &lt;code>?&lt;/code> operator, and so on.
+Though this still denotes areas of your code that return errors, it still adds
+additional cognitive load to understand and model these concepts in your head,
+rather than letting the code explicitly and plainly tell you what it is doing.&lt;/p>
+&lt;p>Go2&amp;rsquo;s design proposal&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup> for error handling is interesting, but I still digress
+that it focuses on reducing the effort tied to writing code, rather than the
+overall cost of reading, understanding, and maintaining code. Go&amp;rsquo;s error
+handling helps you improve the base quality of the code, at the expense of a
+little extra written code to accomplish that, and that&amp;rsquo;s ok.&lt;/p>
+&lt;hr>
+&lt;h2 id="tldr">TL;DR:&lt;/h2>
+&lt;p>Overall, I apply the following guidelines for error handling in Go:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>always&lt;/strong> handle errors. Never use &lt;code>_&lt;/code>. Use &lt;code>panic&lt;/code> if it isn&amp;rsquo;t production or
+mission critical.&lt;/li>
+&lt;li>expand if possible on what failed due to the error. Use &lt;code>fmt.Errorf&lt;/code> with &lt;code>%w&lt;/code>&lt;/li>
+&lt;li>use 1.13 features of &lt;code>Is&lt;/code>, &lt;code>As&lt;/code>, and &lt;code>Unwrap&lt;/code> to support more robust error
+handling use-cases&lt;/li>
+&lt;li>focus more on the ability for your code to tell others what it does plainly,
+without ambiguity. Writing a couple more lines, or copying a couple of lines
+won&amp;rsquo;t drastically derail a timeline to complete a project&lt;/li>
+&lt;/ul>
+&lt;div class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1">
+&lt;p>&lt;a href="https://go.dev/doc/go1.13#error_wrapping">Go 1.13 Release Notes (Error Wrapping)&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2">
+&lt;p>&lt;a href="https://www.youtube.com/watch?v=6wIP3rO6On8&amp;amp;t=131s">Go 2 Drafts Announcement&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3">
+&lt;p>&lt;a href="https://www.boramalper.org/blog/go-s-error-handling-sucks-a-quantitative-analysis/">Go&amp;rsquo;s Error Handling Sucks&lt;/a>,
+&lt;a href="https://rauljordan.com/2020/07/06/why-go-error-handling-is-awesome.html">Why Go&amp;rsquo;s Error Handling is Awesome&lt;/a>,
+&lt;a href="https://debugged.it/blog/go-is-terrible/">Go is a terrible language&lt;/a>&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:4">
+&lt;p>&lt;a href="https://go.googlesource.com/proposal/+/master/design/go2draft-error-handling-overview.md">Error Handling (Go2 Draft)&lt;/a>&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/div></description></item><item><title>Boring Code is a Virtue</title><link>https://chrisprijic.com/boring-code-is-a-virtue/</link><pubDate>Tue, 19 Apr 2022 05:00:00 -0700</pubDate><guid>https://chrisprijic.com/boring-code-is-a-virtue/</guid><description>&lt;p>This past month, I&amp;rsquo;ve had the chance to dive back in to pair-programming and
 code reviews at a higher frequency than usual. This has given me the chance to
 reflect on my software development process and how it&amp;rsquo;s changed over time. This
 post covers some of the insights discovered during that reflection, and why much
@@ -138,25 +276,25 @@ down to checks (if/switch) and loops (for/while) to accomplish a vast majority
 of its tasks.&lt;/p>
 &lt;p>You don&amp;rsquo;t &lt;em>have&lt;/em> to use that &amp;ldquo;Next Framework&amp;rdquo;. I highly suggest trying these out
 in your next project.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>&lt;a href="https://caseymuratori.com/blog_0016">Complexity and Granularity&lt;/a>,
 Part 2 in a series of articles on Casey Muratori&amp;rsquo;s approach to software
 development.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>&lt;a href="https://phauer.com/2016/dont-share-libraries-among-microservices/">Don&amp;rsquo;t Share Libraries among Microservices&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>Check out &lt;a href="https://snyk.io/blog/peacenotwar-malicious-npm-node-ipc-package-vulnerability/">this&lt;/a>
 and &lt;a href="https://snyk.io/blog/open-source-npm-packages-colors-faker/">this&lt;/a>;
 both vulnerabilities occured &lt;em>just this year&lt;/em> in very common packages on
 NPM.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>My Guidelines on Product Development</title><link>https://chrisprijic.com/my-guidelines-on-product-development/</link><pubDate>Mon, 28 Mar 2022 10:00:00 -0700</pubDate><guid>https://chrisprijic.com/my-guidelines-on-product-development/</guid><description>&lt;p>&lt;em>This is by no means a novel approach; however, I wanted to share my 2¢ and
+&lt;/div></description></item><item><title>My Guidelines on Product Development</title><link>https://chrisprijic.com/my-guidelines-on-product-development/</link><pubDate>Mon, 28 Mar 2022 10:00:00 -0700</pubDate><guid>https://chrisprijic.com/my-guidelines-on-product-development/</guid><description>&lt;p>&lt;em>This is by no means a novel approach; however, I wanted to share my 2¢ and
 reflect the process.&lt;/em>&lt;/p>
 &lt;p>&lt;img src="https://chrisprijic.com/img/product_development_swing.jpg" alt="The different interpretations when a customer requests a feature">&lt;/p>
 &lt;p style="text-align: center;font-size: 1.3rem;">&lt;i>
@@ -277,21 +415,21 @@ product or finding those customers initially that can give you effective
 feedback. If you take small steps, develop end-to-end as quickly as possible,
 and continuously iterate on that feedback, you&amp;rsquo;re bound to build products that
 your customers want and keep coming back to use!&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>_From &lt;a href="https://medium.com/@thx2001r/the-project-cartoon-root-cause-5e82e404ec8a">The &amp;ldquo;Project Cartoon&amp;rdquo; Root Cause&lt;/a>&amp;rsquo;s
 article on the same cartoon. (Historical Link: &lt;a href="https://archive.ph/FgxPK">https://archive.ph/FgxPK&lt;/a>)&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>&lt;em>Often these implementations are a &amp;lsquo;quick shot&amp;rsquo; through all layers of an
 application, such as connecting a single form&amp;rsquo;s input field to the
 back-end, to prove the layers connect as expected.&lt;/em>
 (&lt;a href="https://en.wikipedia.org/wiki/Scrum_(software_development)">Wikipedia&lt;/a>)&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Idempotency is Key</title><link>https://chrisprijic.com/idempotency-is-key/</link><pubDate>Fri, 11 Feb 2022 14:00:00 -0800</pubDate><guid>https://chrisprijic.com/idempotency-is-key/</guid><description>&lt;p>&lt;strong>Idempotence&lt;/strong>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> is a property of software that regardless of the number of
+&lt;/div></description></item><item><title>Idempotency is Key</title><link>https://chrisprijic.com/idempotency-is-key/</link><pubDate>Fri, 11 Feb 2022 14:00:00 -0800</pubDate><guid>https://chrisprijic.com/idempotency-is-key/</guid><description>&lt;p>&lt;strong>Idempotence&lt;/strong>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> is a property of software that regardless of the number of
 times an operation is run, the final results (its output + side effects) are
 equivalent to running it only once.&lt;/p>
 &lt;p>If you&amp;rsquo;re performing an action at a given time, you could schedule a cron
@@ -453,27 +591,27 @@ build reliable software processes that can handle more of the unknowns that
 critical production systems can throw at you. When you have a critical process,
 idempotency can be one of the best tools to create a more resilient software
 solution.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>&lt;a href="https://en.wikipedia.org/wiki/Idempotence">Wikipedia, Idempotence&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>A great example is Stripe&amp;rsquo;s
 &lt;a href="https://stripe.com/blog/idempotency">Idempotency Key&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>&lt;em>When you think in terms of the blast radius, the question of failure is
 no longer a question of if but a matter of when.&lt;/em>
 &lt;a href="https://aws.amazon.com/getting-started/fundamentals-core-concepts/">AWS Fundamentals&lt;/a>&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:4" role="doc-endnote">
+&lt;li id="fn:4">
 &lt;p>The process is idempotent, but the transform is &lt;em>reproducable&lt;/em>.
 &lt;a href="https://medium.com/ssense-tech/lets-get-idempotence-right-59f227178bb8">Let’s Get ‘Idempotence’ Right&lt;/a>&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Personal Goals for 2022</title><link>https://chrisprijic.com/personal-goals-for-2022/</link><pubDate>Fri, 14 Jan 2022 12:38:42 -0800</pubDate><guid>https://chrisprijic.com/personal-goals-for-2022/</guid><description>&lt;p>As I step into 2022, I want to write down my goals for this year. This list is
+&lt;/div></description></item><item><title>Personal Goals for 2022</title><link>https://chrisprijic.com/personal-goals-for-2022/</link><pubDate>Fri, 14 Jan 2022 12:38:42 -0800</pubDate><guid>https://chrisprijic.com/personal-goals-for-2022/</guid><description>&lt;p>As I step into 2022, I want to write down my goals for this year. This list is
 by no means all-encompassing but it covers many of the highlights I want to hit
 this year.&lt;/p>
 &lt;p>I’ve found writing down and sharing my goals to be a great motivator, so this
