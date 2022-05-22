@@ -1,13 +1,13 @@
 ---
-title: "5 Years of Go: Error Handling"
+title: "Error Handling in Go"
 date: 2022-05-22T02:14:54-07:00
 draft: false
 ---
 
 I've been using Go for five years now in both professional and personal 
-projects. This will be the first post of many where I analyze a particular part 
-of the language, and see some common patterns and lessons I've learned along the 
-way.
+projects. This will be the first post of many where I look back at that 
+experience and analyze a particular part of the language, as well as share some 
+common patterns and lessons I've learned along the way.
 
 ## Error handling in Go
 
